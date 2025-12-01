@@ -48,20 +48,38 @@
         padding: 15px;
     }
 
-    .gallery img {
+    .gallery-item {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .gallery img, .gallery video {
         width: 100%;
         height: 180px;
         object-fit: cover;
         border-radius: 8px;
-        cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
 
-    .gallery img:hover {
+    .gallery-item:hover img,
+    .gallery-item:hover video {
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
+    /* Icono de play para videos */
+    .play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 45px;
+        color: white;
+        text-shadow: 0px 0px 10px black;
+        pointer-events: none;
+    }
+
+    /* Lightbox */
     .lightbox {
         position: fixed;
         inset: 0;
@@ -70,12 +88,18 @@
         justify-content: center;
         align-items: center;
         z-index: 999;
+        padding: 20px;
     }
 
-    .lightbox img {
+    .lightbox-content {
         max-width: 90%;
         max-height: 85%;
-        border-radius: 8px;
+    }
+
+    .lightbox-content video, .lightbox-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
     }
 
     .lightbox span {
@@ -119,44 +143,67 @@
 
 <div class="lightbox" id="lightbox">
     <span onclick="closeLightbox()">&times;</span>
-    <img id="lightbox-img">
+    <div class="lightbox-content" id="lightbox-content"></div>
 </div>
 
 <script>
-/* Cargar imágenes automáticamente desde GitHub */
-async function loadImages() {
+async function loadMedia(folder) {
     const repoUser = "KATO250712";
-    const repoName = "AlbumFamiliar";  // Cambia si tu repo se llama diferente
-    const folderPath = "imagenes";      // Asegúrate que exista esta carpeta
-
-    const apiURL = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${folderPath}`;
+    const repoName = "AlbumFamiliar";
+    const apiURL = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${folder}`;
 
     const res = await fetch(apiURL);
+    if (!res.ok) return;
     const files = await res.json();
 
     const gallery = document.getElementById("gallery");
 
     files.forEach(file => {
-        if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-            const img = document.createElement("img");
-            img.src = file.download_url;
-            img.onclick = () => openLightbox(file.download_url);
-            gallery.appendChild(img);
+        const isImage = file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+        const isVideo = file.name.match(/\.(mp4|webm|mov)$/i);
+
+        if (!isImage && !isVideo) return;
+
+        const item = document.createElement("div");
+        item.classList.add("gallery-item");
+
+        if (isImage) {
+            item.innerHTML = `<img src="${file.download_url}">`;
+            item.onclick = () => openLightbox("img", file.download_url);
         }
+
+        if (isVideo) {
+            item.innerHTML = `
+                <video src="${file.download_url}" muted></video>
+                <div class="play-icon">▶</div>
+            `;
+            item.onclick = () => openLightbox("video", file.download_url);
+        }
+
+        gallery.appendChild(item);
     });
 }
 
-/* Lightbox */
-function openLightbox(src) {
-    document.getElementById("lightbox-img").src = src;
+function openLightbox(type, src) {
+    const content = document.getElementById("lightbox-content");
+
+    if (type === "img") {
+        content.innerHTML = `<img src="${src}">`;
+    } else {
+        content.innerHTML = `<video src="${src}" controls autoplay></video>`;
+    }
+
     document.getElementById("lightbox").style.display = "flex";
 }
 
 function closeLightbox() {
     document.getElementById("lightbox").style.display = "none";
+    document.getElementById("lightbox-content").innerHTML = "";
 }
 
-loadImages();
+/* Cargar imágenes y videos */
+loadMedia("imagenes");  
+loadMedia("videos");     // <- crea esta carpeta en el repo
 </script>
 
 <footer>
