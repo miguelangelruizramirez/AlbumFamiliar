@@ -139,7 +139,14 @@
         color: #666;
         font-size: 0.9rem;
         margin-top: 20px;
-    }
+    }.year-header {
+    margin: 20px 0 10px;
+    padding-left: 5px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    border-left: 5px solid #555;
+}
 </style>
 </head>
 
@@ -176,7 +183,164 @@
     <h2>Videos 🎥</h2>
     <div class="video-grid" id="video-grid"></div>
 </div>
-<script>
+    <script>
+const repoUser = "KATO250712";
+const repoName = "AlbumFamiliar";
+const videosFolder = "videos";
+const imagesFolder = "imagenes";
+
+/* Extraer fecha desde nombre del archivo */
+function extractDate(filename) {
+    const patterns = [
+        /(\d{4})[-_]?(\d{2})[-_]?(\d{2})/,
+        /IMG_(\d{4})(\d{2})(\d{2})/
+    ];
+
+    for (const p of patterns) {
+        const match = filename.match(p);
+        if (match) {
+            const y = match[1], m = match[2], d = match[3];
+            return new Date(`${y}-${m}-${d}`);
+        }
+    }
+    return null;
+}
+
+/* Ordenar archivos por fecha */
+function sortByDate(files) {
+    return files.sort((a, b) => {
+        const da = extractDate(a.name);
+        const db = extractDate(b.name);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return db - da;
+    });
+}
+
+/* Formato bonito */
+function formatDate(date) {
+    if (!date) return null;
+    const d = String(date.getDate()).padStart(2, "0");
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const y = date.getFullYear();
+    return `${d}/${m}/${y}`;
+}
+
+/* Crear encabezado de año */
+function addYearHeader(container, year) {
+    const h = document.createElement("h2");
+    h.className = "year-header";
+    h.textContent = `📅 ${year}`;
+    container.appendChild(h);
+}
+
+/* ===== CARGAR VIDEOS ===== */
+async function loadVideos() {
+    const api = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${videosFolder}`;
+    const res = await fetch(api);
+    if (!res.ok) return;
+
+    let files = await res.json();
+    files = sortByDate(files);
+
+    const grid = document.getElementById("video-grid");
+
+    let currentYear = null;
+
+    files.forEach(file => {
+        if (!file.name.match(/\.(mp4|webm|mov)$/i)) return;
+
+        const date = extractDate(file.name);
+        const year = date ? date.getFullYear() : "Sin fecha";
+
+        if (year !== currentYear) {
+            addYearHeader(grid, year);
+            currentYear = year;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("video-item");
+
+        const v = document.createElement("video");
+        v.src = file.download_url;
+        v.autoplay = true;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.onclick = () => openLightbox("video", file.download_url);
+
+        const dateTag = document.createElement("div");
+        dateTag.className = "item-date";
+        dateTag.textContent = date ? formatDate(date) : file.name;
+
+        wrapper.appendChild(v);
+        wrapper.appendChild(dateTag);
+        grid.appendChild(wrapper);
+    });
+}
+
+/* ===== CARGAR IMÁGENES ===== */
+async function loadImages() {
+    const api = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${imagesFolder}`;
+    const res = await fetch(api);
+    if (!res.ok) return;
+
+    let files = await res.json();
+    files = sortByDate(files);
+
+    const gallery = document.getElementById("gallery");
+
+    let currentYear = null;
+
+    files.forEach(file => {
+        if (!file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) return;
+
+        const date = extractDate(file.name);
+        const year = date ? date.getFullYear() : "Sin fecha";
+
+        if (year !== currentYear) {
+            addYearHeader(gallery, year);
+            currentYear = year;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.src = file.download_url;
+        img.onclick = () => openLightbox("img", file.download_url);
+
+        const dateTag = document.createElement("div");
+        dateTag.className = "item-date";
+        dateTag.textContent = date ? formatDate(date) : file.name;
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(dateTag);
+        gallery.appendChild(wrapper);
+    });
+}
+
+/* ==== LIGHTBOX ==== */
+function openLightbox(type, src) {
+    const content = document.getElementById("lightbox-content");
+    content.innerHTML = type === "img"
+        ? `<img src="${src}">`
+        : `<video src="${src}" controls autoplay></video>`;
+
+    document.getElementById("lightbox").style.display = "flex";
+}
+
+function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+    document.getElementById("lightbox-content").innerHTML = "";
+}
+
+/* Ejecutar */
+loadVideos();
+loadImages();
+</script>
+<!--<script>
 async function loadVideos() {
     const repoUser = "KATO250712";
     const repoName = "AlbumFamiliar";
@@ -248,7 +412,7 @@ function closeLightbox() {
 loadVideos();
 /* Luego las imágenes */
 loadImages();
-</script>
+</script>-->
 
 <footer>
     
