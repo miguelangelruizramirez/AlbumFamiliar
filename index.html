@@ -3,92 +3,138 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Álbum Familiar</title>
+<title>Álbum Familiar — Nuestros Recuerdos</title>
 
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: "Segoe UI", Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background: #f0f0f0;
+        background: #f7f4ef;
+        color: #333;
     }
 
-    h1 {
+    header {
         text-align: center;
-        padding: 20px 0;
-        margin: 0;
-        background: #222;
+        padding: 30px 20px;
+        background: linear-gradient(135deg, #2b2b2b, #444);
         color: #fff;
     }
 
+    header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
+
+    header p {
+        margin-top: 8px;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    /* Descripción del álbum */
+    .intro {
+        text-align: center;
+        padding: 15px 25px;
+        font-size: 1rem;
+        color: #5a514a;
+        max-width: 700px;
+        margin: auto;
+    }
+
+    /* Galería */
     .gallery {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 10px;
-        padding: 15px;
+        gap: 12px;
+        padding: 20px;
     }
 
     .gallery img {
         width: 100%;
         height: 180px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 10px;
         cursor: pointer;
-        transition: transform 0.3s;
+        transition: transform 0.25s, box-shadow 0.25s;
+        box-shadow: 0 3px 7px rgba(0,0,0,0.15);
     }
 
     .gallery img:hover {
-        transform: scale(1.05);
+        transform: scale(1.04);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.25);
     }
 
-    /* Caja para subir imágenes */
-    .upload-box {
-        background: white;
-        margin: 15px;
+    /* Lightbox */
+    .lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        z-index: 9999;
     }
 
-    input[type="file"] {
-        margin-top: 10px;
+    .lightbox img {
+        max-width: 90%;
+        max-height: 80%;
+        border-radius: 10px;
+        border: 3px solid #fff;
     }
 
-    .note {
+    .lightbox span {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 40px;
+        color: white;
+        cursor: pointer;
+    }
+
+    footer {
+        text-align: center;
         font-size: 13px;
-        color: #666;
-        margin-top: 10px;
+        padding: 15px;
+        color: #6a625d;
+        margin-top: 20px;
     }
 </style>
 </head>
 
 <body>
 
-<h1>Álbum Familiar 📸</h1>
+<header>
+    <h1>Álbum Familiar</h1>
+    <p>Guía de vida y recuerdos — Miguel, Joss y nuestro hijo</p>
+</header>
 
-<div class="upload-box">
-    <h3>Subir nueva foto al álbum</h3>
-    <p><b>NOTA:</b> GitHub no permite subir imágenes automáticamente desde un formulario.  
-    Este botón solo sirve para seleccionar la imagen y obtener una vista previa.  
-    Para añadirla al repositorio, debes subirla manualmente a <code>imagenes/</code> desde GitHub.</p>
-
-    <input type="file" id="fileInput" accept="image/*">
-    <div id="preview"></div>
-
-    <p class="note">Después de seleccionar la foto → súbela manualmente a la carpeta <code>imagenes/</code> en el repositorio.</p>
+<div class="intro">
+    Este espacio existe para que, con el tiempo, podamos volver a ver cómo hemos crecido, cambiado
+    y vivido momentos que merecen guardarse.  
+    Un sitio sencillo, hecho con amor, para que nuestro hijo un día pueda ver parte de nuestra historia.
 </div>
 
+<!-- Galería -->
 <div class="gallery" id="gallery"></div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <span onclick="closeLightbox()">&times;</span>
+    <img id="lightbox-img">
+</div>
+
 <script>
-/* Cargar imágenes automáticamente */
+/* Cargar imágenes del repo automáticamente */
 async function loadImages() {
     const repoUser = "KATO250712";
-    const repoName = "AlbumFamiliar";
-    const folderPath = "imagenes";
+    const repoName = "RecuerdosFamiliares";  
+    const folder = "imagenes/Fotos";
 
-    const apiURL = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${folderPath}`;
-
+    const apiURL = `https://api.github.com/repos/${repoUser}/${repoName}/contents/${folder}`;
     const res = await fetch(apiURL);
     const files = await res.json();
 
@@ -98,26 +144,30 @@ async function loadImages() {
         if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
             const img = document.createElement("img");
             img.src = file.download_url;
+
+            img.onclick = () => openLightbox(file.download_url);
+
             gallery.appendChild(img);
         }
     });
 }
 
-/* Vista previa de imagen a subir */
-document.getElementById("fileInput").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+/* Lightbox */
+function openLightbox(src) {
+    document.getElementById("lightbox-img").src = src;
+    document.getElementById("lightbox").style.display = "flex";
+}
 
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-        document.getElementById("preview").innerHTML =
-            `<img src="${ev.target.result}" style="width:200px;margin-top:10px;border-radius:8px;">`;
-    };
-    reader.readAsDataURL(file);
-});
+function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+}
 
 loadImages();
 </script>
+
+<footer>
+    Creado por Miguel — Para mi hijo, para Joss, para nosotros.
+</footer>
 
 </body>
 </html>
