@@ -4,8 +4,7 @@ Este repositorio existe para guardar recuerdos que no deben perderse:
 momentos con mi hijo, con Joss, con mi familia y conmigo mismo.
 
 También forma parte de mi proceso personal de recuperación, reflexión y crecimiento.  
-Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida,  
-y que quiero que mi hijo pueda ver cuando sea más grande.
+Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida.
 ---
 
 ## 🌟 Contenido del repositorio
