@@ -5,9 +5,7 @@ momentos con mi hijo, con Joss, con mi familia y conmigo mismo.
 
 También forma parte de mi proceso personal de recuperación, reflexión y crecimiento.  
 Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida,  
-y que quiero que mi hijo pueda ver cuando sea más grande, para entender quién soy  
-y qué he intentado hacer para mejorar.
-
+y que quiero que mi hijo pueda ver cuando sea más grande.
 ---
 
 ## 🌟 Contenido del repositorio
