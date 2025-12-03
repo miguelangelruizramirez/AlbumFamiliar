@@ -93,7 +93,12 @@ momentos con mi hijo, con Joss, con mi familia y conmigo mismo.
 También forma parte de reflexión, crecimiento y recuperación  
 Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida..</p></div>
 
-<!-- FOTOS -->
+    <!-- VIDEOS -->
+<div class="videos-section">
+    <h2>Videos 🎥</h2>
+    <div class="video-grid" id="video-grid"></div>
+</div>
+    <!-- FOTOS -->
 <div class="gallery" id="gallery"></div>
 
 <!-- LIGHTBOX -->
@@ -102,17 +107,13 @@ Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi 
     <div class="lightbox-content" id="lightbox-content"></div>
 </div>
 
-    <!-- VIDEOS -->
-<div class="videos-section">
-    <h2>Videos 🎥</h2>
-    <div class="video-grid" id="video-grid"></div>
-</div>
+
     
 
 <script>
 // VIDEOS
 async function loadVideos() {
-    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/videos";
+    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/VideosDestacados";
     const res = await fetch(apiURL);
     if (!res.ok) return;
     const files = await res.json();
