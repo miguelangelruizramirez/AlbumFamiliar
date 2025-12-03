@@ -101,6 +101,11 @@
     <span onclick="closeLightbox()">&times;</span>
     <div class="lightbox-content" id="lightbox-content"></div>
 </div>
+<!-- todos los videos-->
+<div class="lightbox" id="lightbox">
+    <span onclick="closeLightbox()">&times;</span>
+    <div class="lightbox-content2" id="lightbox-content2"></div>
+</div>
 
 
     
@@ -171,7 +176,43 @@ function closeLightbox() {
 loadVideos();
 loadImages();
 </script>
+<script>// VIDEOS
+async function loadVideosTodos() {
+    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/videos";
+    const res = await fetch(apiURL);
+    if (!res.ok) return;
+    const files = await res.json();
 
+    const videoGrid = document.getElementById("video-grid");
+    files.forEach(file => {
+        if (file.name.match(/\.(mp4|webm|mov)$/i)) {
+            const video = document.createElement("video");
+            video.src = file.download_url;
+            video.autoplay = true;
+            video.muted = true;
+            video.loop = true;
+            video.onclick = () => openLightbox("video", file.download_url);
+            videoGrid.appendChild(video);
+        }
+    });
+}
+    
+// LIGHTBOX
+function openLightbox(type, src) {
+    const content = document.getElementById("lightbox-content");
+    content.innerHTML = type === "img"
+        ? `<img src="${src}">`
+        : `<video src="${src}" controls autoplay></video>`;
+    document.getElementById("lightbox").style.display = "flex";
+}
+
+function closeLightbox() {
+    document.getElementById("lightbox2").style.display = "none";
+    document.getElementById("lightbox-content2").innerHTML = "";
+}
+
+loadVideosTodos();
+</script>
 <footer>
 
       "Todo lo que te viniere a la mano para hacer, hazlo según tus fuerzas." — Eclesiastés 9:10
