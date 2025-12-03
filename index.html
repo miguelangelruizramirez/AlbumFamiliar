@@ -117,7 +117,11 @@
     
     <p> Este repositorio existe para guardar recuerdos que no deben perderse: momentos con mi hijo, con Joss, con mi familia y conmigo mismo. También forma parte de reflexión, crecimiento y recuperación Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida..</p></div>
 
-
+<div class="videos-section">
+  <video class="video-header" autoplay muted loop playsinline>
+    <source src="VideosDestacados/miguelvideos~2.mp4" type="video/mp4">
+  </video>
+</div>
 
     <!-- FOTOS -->
 <div class="gallery" id="gallery"></div>
@@ -132,12 +136,7 @@
     <span onclick="closeLightbox()">&times;</span>
     <div class="lightbox-content2" id="lightbox-content2"></div>
 </div>
-<div class="videos-section">
-  <video class="video-header" autoplay muted loop playsinline>
-    <source src="VideosDestacados/miguelvideos~2.mp4" type="video/mp4">
-</div>
-    
-  </video>
+
     <!-- VIDEOS -->
 <div class="videos-section">
     <h2>Videos 🎥</h2>
@@ -210,27 +209,7 @@ function closeLightbox() {
 
 loadVideos();
 loadImages();
-</script>
-<script>// VIDEOS
-async function loadVideosTodos() {
-    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/videos";
-    const res = await fetch(apiURL);
-    if (!res.ok) return;
-    const files = await res.json();
 
-    const videoGrid = document.getElementById("video-grid");
-    files.forEach(file => {
-        if (file.name.match(/\.(mp4|webm|mov)$/i)) {
-            const video = document.createElement("video");
-            video.src = file.download_url;
-            video.autoplay = true;
-            video.muted = true;
-            video.loop = true;
-            video.onclick = () => openLightbox("video", file.download_url);
-            videoGrid.appendChild(video);
-        }
-    });
-}
     
 // LIGHTBOX
 function openLightbox(type, src) {
@@ -242,11 +221,10 @@ function openLightbox(type, src) {
 }
 
 function closeLightbox() {
-    document.getElementById("lightbox2").style.display = "none";
-    document.getElementById("lightbox-content2").innerHTML = "";
+    document.getElementById("lightbox").style.display = "none";
+    document.getElementById("lightbox-content").innerHTML = "";
 }
 
-loadVideosTodos();
 </script>
 <footer>
 <p>Conservar recuerdos familiares de la manera más segura y accesible.</p>
