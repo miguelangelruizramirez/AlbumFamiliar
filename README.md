@@ -15,7 +15,7 @@ Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi 
 - El archivo `index.html` muestra automáticamente galeria
 
 👉 **Abrir Álbum:**  
-
+https://kato250712.github.io/AlbumFamiliar/
 ---
 
 ## 🧭 Propósito
