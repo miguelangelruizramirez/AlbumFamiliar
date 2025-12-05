@@ -257,7 +257,7 @@ async function loadAlbumMenu() {
   const albumList = document.getElementById("albumList");
   albumList.innerHTML = "<p>Cargando...</p>";
 
-  const fotoFolders = await fetchFolders("fotos");
+  const fotoFolders = await fetchFolders("imagenes");
   const videoFolders = await fetchFolders("VideosDestacados");
 
   let html = `<strong>📷 Fotos</strong>`;
