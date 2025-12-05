@@ -277,7 +277,7 @@ async function openAlbum(path) {
       html += `<img src="${f.download_url}" onclick="openLightbox('img','${f.download_url}')">`;
     }
     if (/\.(mp4|webm|mov)$/i.test(f.name)) {
-      html += `<video src="${f.download_url}" muted loop onclick="openLightbox('video','${f.download_url}')"></VideosDestacados>`;
+      html += `<video src="${f.download_url}" muted loop onclick="openLightbox('video','${f.download_url}')"></videos>`;
     }
   });
 
@@ -304,7 +304,7 @@ loadAlbumMenu();
     
     // VIDEOS
 async function loadVideos() {
-    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/videos";
+    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/VideosDestacados";
     const res = await fetch(apiURL);
     if (!res.ok) return;
     const files = await res.json();
