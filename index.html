@@ -202,6 +202,12 @@
     
     <p> Este repositorio existe para guardar recuerdos que no deben perderse: momentos con mi hijo, con Joss, con mi familia y conmigo mismo. También forma parte de reflexión, crecimiento y recuperación Aquí dejo imágenes, videos y documentos que marcaron etapas importantes de mi vida..</p></div>
 
+<div class="album-menu-btn" onclick="toggleAlbumMenu()">📂 Álbumes</div>
+
+<div class="album-menu-panel" id="albumMenu">
+  <div class="album-menu-title">Carpetas</div>
+  <div id="albumList"></div>
+</div>
 
     <!-- FOTOS -->
     <div class="gallery" id="gallery"></div>
@@ -271,7 +277,7 @@ async function openAlbum(path) {
       html += `<img src="${f.download_url}" onclick="openLightbox('img','${f.download_url}')">`;
     }
     if (/\.(mp4|webm|mov)$/i.test(f.name)) {
-      html += `<video src="${f.download_url}" muted loop onclick="openLightbox('video','${f.download_url}')"></video>`;
+      html += `<video src="${f.download_url}" muted loop onclick="openLightbox('video','${f.download_url}')"></VideosDestacados>`;
     }
   });
 
@@ -290,13 +296,7 @@ function toggleAlbumMenu() {
 loadAlbumMenu();
 
     </script>
-<div class="album-menu-btn" onclick="toggleAlbumMenu()">📂 Álbumes</div>
 
-<div class="album-menu-panel" id="albumMenu">
-  <div class="album-menu-title">Carpetas</div>
-  <div id="albumList"></div>
-</div>
-<div id="albumViewer"></div>
 
 
 <script>
@@ -383,7 +383,7 @@ function closeLightbox() {
 }
 
 </script>
- 
+ <div id="albumViewer"></div>
 <footer>
 
      <p> "Todo lo que te viniere a la mano para hacer, hazlo según tus fuerzas." — Eclesiastés 9:10</p>
