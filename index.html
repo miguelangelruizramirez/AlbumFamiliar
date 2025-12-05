@@ -219,75 +219,7 @@
 
 
 <script>
-    
-    async function fetchFolders(path) {
-  const url = `https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/${path}`;
-  const res = await fetch(url);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.filter(item => item.type === "dir");
-}
 
-async function loadAlbumMenu() {
-  const albumList = document.getElementById("albumList");
-  albumList.innerHTML = "<p>Cargando...</p>";
-
-  const fotoFolders = await fetchFolders("fotos");
-  const videoFolders = await fetchFolders("VideosDestacados");
-
-  let html = `<strong>📷 Fotos</strong>`;
-  fotoFolders.forEach(f => {
-    html += `<div class="album-link" onclick="openAlbum('${f.path}')">${f.name}</div>`;
-  });
-
-  html += `<strong>🎥 Videos</strong>`;
-  videoFolders.forEach(v => {
-    html += `<div class="album-link" onclick="openAlbum('${v.path}')">${v.name}</div>`;
-  });
-
-  albumList.innerHTML = html;
-}
-
-async function openAlbum(path) {
-  const viewer = document.getElementById("albumViewer");
-  const contentBox = `
-    <h2>📁 ${path}</h2>
-    <div id="albumContent"></div>
-  `;
-  viewer.innerHTML = contentBox;
-
-  const res = await fetch(`https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/${path}`);
-  if (!res.ok) return;
-
-  const files = await res.json();
-  const content = document.getElementById("albumContent");
-
-  let html = "";
-
-  files.forEach(f => {
-    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(f.name)) {
-      html += `<img src="${f.download_url}" onclick="openLightbox('img','${f.download_url}')">`;
-    }
-    if (/\.(mp4|webm|mov)$/i.test(f.name)) {
-      html += `<video src="${f.download_url}" muted loop onclick="openLightbox('video','${f.download_url}')"></video>`;
-    }
-  });
-
-  content.innerHTML = html;
-
-  // Cierra el menú al elegir una carpeta
-  document.getElementById("albumMenu").style.display = "none";
-}
-
-function toggleAlbumMenu() {
-  const menu = document.getElementById("albumMenu");
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
-// Inicializar menús al cargar
-loadAlbumMenu();
-
-    
 <div class="album-menu-btn" onclick="toggleAlbumMenu()">📂 Álbumes</div>
 
 <div class="album-menu-panel" id="albumMenu">
@@ -298,25 +230,6 @@ loadAlbumMenu();
 
     <script>
     
-async function loadVideos() {
-    const apiURL = "https://api.github.com/repos/KATO250712/AlbumFamiliar/contents/videos";
-    const res = await fetch(apiURL);
-    if (!res.ok) return;
-    const files = await res.json();
-
-    const videoGrid = document.getElementById("video-grid");
-    files.forEach(file => {
-        if (file.name.match(/\.(mp4|webm|mov)$/i)) {
-            const video = document.createElement("video");
-            video.src = file.download_url;
-            video.autoplay = true;
-            video.muted = true;
-            video.loop = true;
-            video.onclick = () => openLightbox("video", file.download_url);
-            videoGrid.appendChild(video);
-        }
-    });
-}
 
 // IMÁGENES
 async function loadImages() {
